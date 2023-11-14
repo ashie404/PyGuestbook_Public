@@ -7,7 +7,7 @@ import os
 import random
 from functools import wraps
 from io import BytesIO
-from Image import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont
 
 
 class ClaptchaError(Exception):
