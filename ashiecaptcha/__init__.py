@@ -51,7 +51,7 @@ class CAPTCHA:
         tts.save('captcha_audio.mp3')
         captcha_audio = ""
 
-        with open('/home/ashie/PyGuestbook/ashiecaptcha/captcha_audio.mp3', 'rb') as audio_file:
+        with open('captcha_audio.mp3', 'rb') as audio_file:
             b64audio = base64.b64encode(audio_file.read())
             captcha_audio = str(b64audio)[2:][:-1]
 
