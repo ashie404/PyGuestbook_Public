@@ -47,11 +47,11 @@ class CAPTCHA:
         # generate captcha audio
         audio_txt = " ".join(self.text)
         engine = pyttsx3.init()
-        engine.save_to_file(audio_txt, '/home/ashie/PyGuestbook/tmp/captcha_audio.mp3')
+        engine.save_to_file(audio_txt, 'captcha_audio.mp3')
         engine.runAndWait()
         captcha_audio = ""
 
-        with open('/home/ashie/PyGuestbook/tmp/captcha_audio.mp3', 'rb') as audio_file:
+        with open('/home/ashie/PyGuestbook/ashiecaptcha/captcha_audio.mp3', 'rb') as audio_file:
             b64audio = base64.b64encode(audio_file.read())
             captcha_audio = str(b64audio)[2:][:-1]
 
