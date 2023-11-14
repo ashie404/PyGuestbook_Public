@@ -46,7 +46,7 @@ class CAPTCHA:
 
         # generate captcha audio
         audio_txt = " ".join(self.text)
-        engine = pyttsx3.init()
+        engine = pyttsx3.init("espeak")
         engine.save_to_file(audio_txt, 'captcha_audio.mp3')
         engine.runAndWait()
         captcha_audio = ""
