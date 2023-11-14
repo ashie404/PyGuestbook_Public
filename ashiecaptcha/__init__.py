@@ -6,6 +6,7 @@ import base64
 import string
 import random
 import os
+import time
 
 from captcha.image import ImageCaptcha
 from gtts import gTTS
@@ -34,6 +35,7 @@ class CAPTCHA:
     def create(self, length=None, digits=None):
         length = self.config['CAPTCHA_LENGTH'] if length is None else length
         digits = self.config['CAPTCHA_DIGITS'] if digits is None else digits
+        currentTimeRound = int(int(time.time())//60 * 60)
         size = 30
         width, height = length * size, size
 
@@ -42,7 +44,7 @@ class CAPTCHA:
 
         c_key = self.text + self.config['SECRET_CAPTCHA_KEY']
 
-        c_hash = generate_password_hash(c_key,
+        c_hash = generate_password_hash(c_key + currentTimeRound,
                                         method=self.config['METHOD'],
                                         salt_length=8)
         c_hash = c_hash.replace(self.config['METHOD'] + '$', '')
@@ -100,7 +102,8 @@ class CAPTCHA:
     
     def verify(self, c_text, c_hash, c_key=None):
         c_key = self.config['SECRET_CAPTCHA_KEY'] if c_key is None else c_key
-        c_text = c_text.upper()
+        currentTimeRound = int(int(time.time())//60 * 60)
+        c_text = c_text.upper() + currentTimeRound
         c_hash = self.config['METHOD'] + '$' + c_hash
         c_key = c_text + c_key
         return check_password_hash(c_hash, c_key)
