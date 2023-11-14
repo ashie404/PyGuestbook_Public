@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from ashiecaptcha.config import config
-from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 from werkzeug.security import generate_password_hash, check_password_hash
 import base64
@@ -8,7 +7,8 @@ import string
 import random
 import os
 
-from claptcha_dev import Claptcha
+from captcha.audio import AudioCaptcha
+from captcha.image import ImageCaptcha
 
 class CAPTCHA:
     def __init__(self, default_config=config, config=config):
@@ -25,35 +25,6 @@ class CAPTCHA:
         return [random.choice(chars) for i in range(ran_int)]
     
     
-    def get_background(self, text_size):
-        background = Image.new('RGBA',
-                               (int(text_size[0] * 1.25),
-                                int(text_size[1] * 1.5)),
-                               color=(0, 0, 0, 255))
-        return background
-    
-    
-    def draw_lines(self, im, lines=25):
-        draw = ImageDraw.Draw(im)
-    
-        for i in range(lines):
-            if random.randint(0, 1) == 0:
-                draw.line(
-                         (random.randint(0, im.size[0]),
-                          0,
-                          random.randint(0, im.size[0]),
-                          im.size[1],),
-                    width=2)
-            else:
-                draw.ellipse(
-                            (random.randint(-80, im.size[0]),
-                             random.randint(-80, -10),
-                             random.randint(-80, im.size[0]),
-                             im.size[1] + random.randint(10, 80),),
-                    width=2)
-        return im
-    
-    
     def create(self, length=None, digits=None):
         length = self.config['CAPTCHA_LENGTH'] if length is None else length
         digits = self.config['CAPTCHA_DIGITS'] if digits is None else digits
@@ -64,9 +35,8 @@ class CAPTCHA:
         text = ''.join([random.choice(characters) for i in range(length)])
         f_path = os.path.dirname(os.path.realpath(__file__))
         f_path = os.path.join(f_path, 'captcha.ttf')
-        c = Claptcha(text, f_path, (204,64),
-             resample=Image.BICUBIC, noise=0.3)
-        txt, out = c.image
+        captcha_img = ImageCaptcha(fonts=['captcha.ttf'])
+        out = captcha_img.generate(text)
 
         c_key = text + self.config['SECRET_CAPTCHA_KEY']
 
