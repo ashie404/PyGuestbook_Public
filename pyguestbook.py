@@ -85,13 +85,6 @@ def captcha(db):
     else:
         return abort(400, 'Invalid site entry for captcha.')
 
-# so silly (all of this is just for getting font to work in captcha frame)
-@app.route('/captcha/fnt', methods=['GET'])
-@limiter.limit('1/second', methods=['GET'])
-def font():
-    return send_file('/home/ash/PyGuestbook/templates/fnt.woff2', attachment_filename='fnt.woff2')
-
-
 ### Guestbook API routing and functions
 
 # post a guestbook entry
