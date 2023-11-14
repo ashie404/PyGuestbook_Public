@@ -91,6 +91,7 @@ def captcha(db):
 def font():
     return send_file('/home/ash/PyGuestbook/templates/fnt.woff2', attachment_filename='fnt.woff2')
 
+
 ### Guestbook API routing and functions
 
 # post a guestbook entry
