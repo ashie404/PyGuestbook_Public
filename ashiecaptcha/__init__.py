@@ -16,7 +16,6 @@ class CAPTCHA:
         f_path = os.path.dirname(os.path.realpath(__file__))
         f_path = os.path.join(f_path, 'captcha.ttf')
         self.captcha_img = ImageCaptcha(fonts=[f_path])
-        self.engine = pyttsx3.init()
         for key in config.keys():
             self.config[key] = config[key]
 
@@ -47,8 +46,9 @@ class CAPTCHA:
 
         # generate captcha audio
         audio_txt = " ".join(self.text)
-        self.engine.save_to_file(audio_txt, 'captcha_audio.mp3')
-        self.engine.runAndWait()
+        engine = pyttsx3.init()
+        engine.save_to_file(audio_txt, 'captcha_audio.mp3')
+        engine.runAndWait()
         captcha_audio = ""
 
         with open('captcha_audio.mp3', 'rb') as audio_file:
