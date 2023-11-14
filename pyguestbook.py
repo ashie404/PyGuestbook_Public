@@ -69,7 +69,7 @@ def handle_exception(e):
 
 # captcha page render
 @app.route('/captcha/<string:db>', methods=['GET'])
-@limiter.limit('1/second', methods=['GET'], error_message='requesting challenges too fast.')
+@limiter.limit('1/second 5/minute', methods=['GET'], error_message='requesting challenges too fast.')
 def captcha(db):
     captcha = CAPTCHA.create()
     if db == "ashiecorner":
