@@ -56,8 +56,7 @@ class CAPTCHA:
         augment = audiomentations.Compose([
             audiomentations.AddGaussianNoise(min_amplitude=0.1, max_amplitude=0.5, p=0.5),
             audiomentations.LowPassFilter(150, 2500, 12, 24, False, 0.5),
-            audiomentations.TanhDistortion(0.01, 0.6, 0.7),
-            audiomentations.Mp3Compression(16, 64, "pydub", 1.0)
+            audiomentations.TanhDistortion(0.01, 0.6, 0.7)
         ])
         signal, sr = librosa.load('captcha_audio.wav')
         augmented_signal = augment(signal, sr)
