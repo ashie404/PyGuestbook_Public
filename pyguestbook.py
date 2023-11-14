@@ -89,7 +89,7 @@ def captcha(db):
 @app.route('/captcha/fnt', methods=['GET'])
 @limiter.limit('1/second', methods=['GET'])
 def font():
-    return send_file('~/PyGuestbook/templates/fnt.woff2', attachment_filename='fnt.woff2')
+    return send_file('/home/ash/PyGuestbook/templates/fnt.woff2', attachment_filename='fnt.woff2')
 
 ### Guestbook API routing and functions
 
