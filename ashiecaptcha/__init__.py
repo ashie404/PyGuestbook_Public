@@ -53,7 +53,7 @@ class CAPTCHA:
 
         with open('captcha_audio.mp3', 'rb') as audio_file:
             b64audio = base64.b64encode(audio_file.read())
-            captcha_audio = str(b64audio)
+            captcha_audio = str(b64audio)[2:][:-1]
 
         return {'img': self.gen_b64img(), 'audio': captcha_audio, 'text': self.text, 'hash': c_hash}
     
@@ -74,6 +74,7 @@ class CAPTCHA:
         audio = '<audio controls class="captcha-audio">' + \
         '<source type="audio/mp3" src="data:audio/mp3;base64, %s />' % captcha['audio'] + \
         '</audio>'
+        
         img = '<img class="simple-captcha-img" ' + \
               'src="data:image/png;base64, %s" />' % captcha['img']
     
