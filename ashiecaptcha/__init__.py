@@ -44,7 +44,7 @@ class CAPTCHA:
 
         c_key = self.text + self.config['SECRET_CAPTCHA_KEY']
 
-        c_hash = generate_password_hash(c_key + currentTimeRound,
+        c_hash = generate_password_hash(c_key + str(currentTimeRound),
                                         method=self.config['METHOD'],
                                         salt_length=8)
         c_hash = c_hash.replace(self.config['METHOD'] + '$', '')
@@ -103,7 +103,7 @@ class CAPTCHA:
     def verify(self, c_text, c_hash, c_key=None):
         c_key = self.config['SECRET_CAPTCHA_KEY'] if c_key is None else c_key
         currentTimeRound = int(int(time.time())//60 * 60)
-        c_text = c_text.upper() + currentTimeRound
+        c_text = c_text.upper() + str(currentTimeRound)
         c_hash = self.config['METHOD'] + '$' + c_hash
         c_key = c_text + c_key
         return check_password_hash(c_hash, c_key)
