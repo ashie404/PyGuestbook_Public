@@ -56,7 +56,7 @@ class CAPTCHA:
         tts.save('captcha_audio.wav')
         # augment audio
         augment = audiomentations.Compose([
-            audiomentations.AddGaussianNoise(min_amplitude=0.1, max_amplitude=0.3, p=0.8),
+            audiomentations.AddGaussianNoise(min_amplitude=0.01, max_amplitude=0.05, p=0.8),
             audiomentations.LowPassFilter(150, 3500, 12, 24, False, 0.5),
             audiomentations.TanhDistortion(0.01, 0.3, 0.8)
         ])
