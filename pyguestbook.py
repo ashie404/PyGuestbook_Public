@@ -6,7 +6,6 @@ from markupsafe import escape
 import csv
 import time
 import re
-import configparser
 
 from base64 import b64encode
 
@@ -16,13 +15,14 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
 from ashiecaptcha import CAPTCHA
-# Parse config file
+import configparser
 config = configparser.ConfigParser()
 config.read('ashiecaptcha.ini')
 CAPTCHA_CONFIG = {'SECRET_CAPTCHA_KEY':config['CAPTCHA_CONFIG']['SECRET_CAPTCHA_KEY'], 
     'METHOD': config['CAPTCHA_CONFIG']['METHOD'],
     'CAPTCHA_LENGTH': int(config['CAPTCHA_CONFIG']['CAPTCHA_LENGTH']),
     'CAPTCHA_DIGITS': config.getboolean('CAPTCHA_CONFIG', 'CAPTCHA_DIGITS') }
+CAPTCHA = CAPTCHA(config=CAPTCHA_CONFIG)
 CAPTCHA = CAPTCHA(config=CAPTCHA_CONFIG)
 
 ### App setup
@@ -32,8 +32,8 @@ app = CAPTCHA.init_app(app)
 
 # create ratelimiter :333
 limiter = Limiter(
-    app,
-    key_func=get_remote_address,
+    get_remote_address,
+    app=app,
     default_limits=["5 per day", "2 per minute"],
     storage_uri="memory://"
 )
