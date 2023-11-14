@@ -36,7 +36,7 @@ class CAPTCHA:
         f_path = os.path.dirname(os.path.realpath(__file__))
         f_path = os.path.join(f_path, 'captcha.ttf')
         captcha_img = ImageCaptcha(fonts=['captcha.ttf'])
-        out = captcha_img.generate(text)
+        out = captcha_img.generate(text).raw
 
         c_key = text + self.config['SECRET_CAPTCHA_KEY']
 
