@@ -8,7 +8,7 @@ import random
 import os
 
 from captcha.image import ImageCaptcha
-import pyttsx3
+from gtts import gTTS
 
 class CAPTCHA:
     def __init__(self, default_config=config, config=config):
@@ -46,9 +46,9 @@ class CAPTCHA:
 
         # generate captcha audio
         audio_txt = " ".join(self.text)
-        engine = pyttsx3.init("espeak")
-        engine.save_to_file(audio_txt, "captcha_audio.mp3")
-        engine.runAndWait()
+        #i caved in and just used gtts cry
+        tts = gTTS(audio_txt)
+        tts.save('captcha_audio.mp3')
         captcha_audio = ""
 
         with open('/home/ashie/PyGuestbook/ashiecaptcha/captcha_audio.mp3', 'rb') as audio_file:
