@@ -21,7 +21,7 @@ config.read('ashiecaptcha.ini')
 CAPTCHA_CONFIG = {'SECRET_CAPTCHA_KEY':config['CAPTCHA_CONFIG']['SECRET_CAPTCHA_KEY'], 
     'METHOD': config['CAPTCHA_CONFIG']['METHOD'],
     'CAPTCHA_LENGTH': int(config['CAPTCHA_CONFIG']['CAPTCHA_LENGTH']),
-    'CAPTCHA_DIGITS': config.getboolean('CAPTCHA_CONFIG', 'CAPTCHA_DIGITS') }
+    'CAPTCHA_DIGITS': config['CAPTCHA_CONFIG'].getboolean('CAPTCHA_DIGITS') }
 CAPTCHA = CAPTCHA(config=CAPTCHA_CONFIG)
 
 ### App setup
