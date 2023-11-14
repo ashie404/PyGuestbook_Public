@@ -42,9 +42,9 @@ class CAPTCHA:
         characters = string.digits if digits else string.ascii_uppercase
         self.text = ''.join([random.choice(characters) for i in range(length)])
 
-        c_key = self.text + self.config['SECRET_CAPTCHA_KEY']
+        c_key = self.text + str(currentTimeRound) + self.config['SECRET_CAPTCHA_KEY']
 
-        c_hash = generate_password_hash(c_key + str(currentTimeRound),
+        c_hash = generate_password_hash(c_key,
                                         method=self.config['METHOD'],
                                         salt_length=8)
         c_hash = c_hash.replace(self.config['METHOD'] + '$', '')
