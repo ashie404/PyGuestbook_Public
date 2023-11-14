@@ -33,7 +33,7 @@ app = CAPTCHA.init_app(app)
 # create ratelimiter :333
 limiter = Limiter(
     app,
-    key_func=get_remote_address(),
+    key_func=get_remote_address,
     default_limits=["5 per day", "2 per minute"],
     storage_uri="memory://"
 )
