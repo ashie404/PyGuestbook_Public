@@ -84,7 +84,7 @@ class CAPTCHA:
     
     def captcha_html(self, captcha):
         audio = '<audio controls class="captcha-audio">' + \
-        '<source type="audio/wav" src="data:audio/wav;base64, ' + captcha['audio'] + '"/>' + \
+        '<source type="audio/mp3" src="data:audio/mp3;base64, ' + captcha['audio'] + '"/>' + \
         '</audio>'
 
         img = '<img class="simple-captcha-img" ' + \
