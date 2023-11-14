@@ -1,0 +1,10 @@
+__pycache__/
+pygbenv/
+guestbook.csv
+pygb.sock
+ash-guestbook.bak.csv
+ash-guestbook.csv
+zen-guestbook.bak.csv
+zen-guestbook.csv
+hitcounter.txt
+gbcfg.ini
