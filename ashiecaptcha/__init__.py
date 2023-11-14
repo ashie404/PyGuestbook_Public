@@ -8,6 +8,7 @@ import random
 import os
 
 from captcha.image import ImageCaptcha
+import pyttsx3
 
 class CAPTCHA:
     def __init__(self, default_config=config, config=config):
@@ -15,6 +16,7 @@ class CAPTCHA:
         f_path = os.path.dirname(os.path.realpath(__file__))
         f_path = os.path.join(f_path, 'captcha.ttf')
         self.captcha_img = ImageCaptcha(fonts=[f_path])
+        self.engine = pyttsx3.init()
         for key in config.keys():
             self.config[key] = config[key]
 
@@ -43,7 +45,17 @@ class CAPTCHA:
                                         salt_length=8)
         c_hash = c_hash.replace(self.config['METHOD'] + '$', '')
 
-        return {'img': self.gen_b64img(), 'text': self.text, 'hash': c_hash}
+        # generate captcha audio
+        audio_txt = " ".join(self.text)
+        self.engine.save_to_file(audio_txt, 'captcha_audio.mp3')
+        self.engine.runAndWait()
+        captcha_audio = ""
+
+        with open('captcha_audio.mp3', 'rb') as audio_file:
+            b64audio = base64.b64encode(audio_file.read())
+            captcha_audio = str(b64audio)
+
+        return {'img': self.gen_b64img(), 'audio': captcha_audio, 'text': self.text, 'hash': c_hash}
     
     
     def gen_b64img(self):
@@ -59,6 +71,9 @@ class CAPTCHA:
     
     
     def captcha_html(self, captcha):
+        audio = '<audio controls class="captcha-audio">' + \
+        '<source type="audio/mp3" src="data:audio/mp3;base64, %s />' % captcha['audio'] + \
+        '</audio>'
         img = '<img class="simple-captcha-img" ' + \
               'src="data:image/png;base64, %s" />' % captcha['img']
     
@@ -67,7 +82,7 @@ class CAPTCHA:
                '<input type="hidden" name="captcha-hash" ' + \
                'value="%s">' % captcha['hash'] 
     
-        return '%s\n%s' % (img, inpu)
+        return '%s\n%s\n%s' % (audio, img, inpu)
     
     
     def verify(self, c_text, c_hash, c_key=None):
