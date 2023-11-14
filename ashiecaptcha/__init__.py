@@ -13,6 +13,9 @@ from captcha.image import ImageCaptcha
 class CAPTCHA:
     def __init__(self, default_config=config, config=config):
         self.config = default_config
+        f_path = os.path.dirname(os.path.realpath(__file__))
+        f_path = os.path.join(f_path, 'captcha.ttf')
+        self.captcha_img = ImageCaptcha(fonts=[f_path])
         for key in config.keys():
             self.config[key] = config[key]
 
@@ -32,25 +35,21 @@ class CAPTCHA:
         width, height = length * size, size
 
         characters = string.digits if digits else string.ascii_uppercase
-        text = ''.join([random.choice(characters) for i in range(length)])
-        f_path = os.path.dirname(os.path.realpath(__file__))
-        f_path = os.path.join(f_path, 'captcha.ttf')
-        captcha_img = ImageCaptcha(fonts=[f_path])
-        out = captcha_img.generate(text).raw
+        self.text = ''.join([random.choice(characters) for i in range(length)])
 
-        c_key = text + self.config['SECRET_CAPTCHA_KEY']
+        c_key = self.text + self.config['SECRET_CAPTCHA_KEY']
 
         c_hash = generate_password_hash(c_key,
                                         method=self.config['METHOD'],
                                         salt_length=8)
         c_hash = c_hash.replace(self.config['METHOD'] + '$', '')
 
-        return {'img': self.convert_b64img(out), 'text': text, 'hash': c_hash}
+        return {'img': self.gen_b64img(), 'text': self.text, 'hash': c_hash}
     
     
-    def convert_b64img(self, out):
+    def gen_b64img(self):
         byte_array = BytesIO()
-        out.save(byte_array, format='PNG')
+        self.captcha_img.write(self.text, byte_array, 'png')
         byte_array = byte_array.getvalue()
     
         b64image = base64.b64encode(byte_array)
