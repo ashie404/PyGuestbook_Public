@@ -59,10 +59,10 @@ class CAPTCHA:
         ])
         signal, sr = librosa.load('captcha_audio.mp3')
         augmented_signal = augment(signal, sr)
-        sf.write("captcha_audio.wav", augmented_signal, sr)
+        sf.write("captcha_audio.mp3", augmented_signal, sr)
         captcha_audio = ""
 
-        with open('captcha_audio.wav', 'rb') as audio_file:
+        with open('captcha_audio.mp3', 'rb') as audio_file:
             b64audio = base64.b64encode(audio_file.read())
             captcha_audio = str(b64audio)[2:][:-1]
 
@@ -83,7 +83,7 @@ class CAPTCHA:
     
     def captcha_html(self, captcha):
         audio = '<audio controls class="captcha-audio">' + \
-        '<source type="audio/wav" src="data:audio/wav;base64, ' + captcha['audio'] + '"/>' + \
+        '<source type="audio/mp3" src="data:audio/mp3;base64, ' + captcha['audio'] + '"/>' + \
         '</audio>'
 
         img = '<img class="simple-captcha-img" ' + \
