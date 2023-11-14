@@ -63,7 +63,7 @@ class CAPTCHA:
         characters = string.digits if digits else string.ascii_uppercase
         text = ''.join([random.choice(characters) for i in range(length)])
         f_path = os.path.dirname(os.path.realpath(__file__))
-        f_path = os.path.join(f_path, 'captcha.ttf')
+        f_path = os.path.join(f_path, 'captcha_alt.ttf')
         c = Claptcha(text, f_path, (204,64),
              resample=Image.BICUBIC, noise=0.3)
         txt, out = c.image

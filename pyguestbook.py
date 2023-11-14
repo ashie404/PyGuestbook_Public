@@ -1,7 +1,7 @@
 # PyGuestbook API written by Ash :3
 # this turned into a bit more than a guestbook api   woops
 
-from flask import json, Flask, jsonify, request, abort, render_template, make_response, Response
+from flask import json, send_file, Flask, jsonify, request, abort, render_template, make_response, Response
 from markupsafe import escape
 import csv
 import time
@@ -84,6 +84,12 @@ def captcha(db):
         return response
     else:
         return abort(400, 'Invalid site entry for captcha.')
+
+# so silly (all of this is just for getting font to work in captcha frame)
+@app.route('/captcha/fnt', methods=['GET'])
+@limiter.limit('1/second', methods=['GET'])
+def font():
+    return send_file('~/PyGuestbook/templates/fnt.woff2')
 
 ### Guestbook API routing and functions
 
