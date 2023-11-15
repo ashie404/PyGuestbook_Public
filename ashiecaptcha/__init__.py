@@ -53,21 +53,21 @@ class CAPTCHA:
         audio_txt = " ".join(self.text)
         #i caved in and just used gtts cry
         tts = gTTS(audio_txt)
-        tts.save('captcha_audio.wav')
+        mp3_fp = BytesIO()
+        tts.write_to_fp(mp3_fp)
         # augment audio
         augment = audiomentations.Compose([
             audiomentations.AddGaussianNoise(min_amplitude=0.01, max_amplitude=0.05, p=0.8),
             audiomentations.LowPassFilter(150, 3500, 12, 24, False, 0.5),
             audiomentations.TanhDistortion(0.01, 0.3, 0.8)
         ])
-        signal, sr = librosa.load('captcha_audio.wav')
+        signal, sr = librosa.load(mp3_fp)
         augmented_signal = augment(signal, sr)
-        sf.write("captcha_audio.mp3", augmented_signal, sr)
-        captcha_audio = ""
+        mp3_fp = BytesIO()
+        sf.write(mp3_fp, augmented_signal, sr)
 
-        with open('captcha_audio.mp3', 'rb') as audio_file:
-            b64audio = base64.b64encode(audio_file.read())
-            captcha_audio = str(b64audio)[2:][:-1]
+        b64audio = base64.b64encode(mp3_fp.getvalue())
+        captcha_audio = str(b64audio)[2:][:-1]
 
         return {'img': self.gen_b64img(), 'audio': captcha_audio, 'text': self.text, 'hash': c_hash}
     
