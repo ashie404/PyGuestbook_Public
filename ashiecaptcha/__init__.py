@@ -17,6 +17,7 @@ import soundfile as sf
 class CAPTCHA:
     def __init__(self, default_config=config, config=config):
         self.config = default_config
+        self.soundindex = 0
         f_path = os.path.dirname(os.path.realpath(__file__))
         f_path = os.path.join(f_path, 'captcha.ttf')
         self.captcha_img = ImageCaptcha(fonts=[f_path])
@@ -50,21 +51,22 @@ class CAPTCHA:
         c_hash = c_hash.replace(self.config['METHOD'] + '$', '')
 
         # generate captcha audio
+        self.soundindex+=1
         audio_txt = " ".join(self.text)
         #i caved in and just used gtts cry
         tts = gTTS(audio_txt)
-        mp3_fp = BytesIO()
-        tts.write_to_fp(mp3_fp)
+        tts.save(str(self.soundindex) + '.mp3')
         # augment audio
         augment = audiomentations.Compose([
             audiomentations.AddGaussianNoise(min_amplitude=0.01, max_amplitude=0.05, p=0.8),
             audiomentations.LowPassFilter(150, 3500, 12, 24, False, 0.5),
             audiomentations.TanhDistortion(0.01, 0.3, 0.8)
         ])
-        signal, sr = librosa.load(mp3_fp)
+        signal, sr = librosa.load(str(self.soundindex) + '.mp3')
         augmented_signal = augment(signal, sr)
         wav_buf = BytesIO()
         sf.write(wav_buf, augmented_signal, sr)
+        os.remove(str(self.soundindex) + '.mp3')
 
         b64audio = base64.b64encode(wav_buf.getvalue())
         captcha_audio = str(b64audio)[2:][:-1]
