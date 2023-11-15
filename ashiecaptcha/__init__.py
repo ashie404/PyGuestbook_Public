@@ -63,10 +63,10 @@ class CAPTCHA:
         ])
         signal, sr = librosa.load(mp3_fp)
         augmented_signal = augment(signal, sr)
-        mp3_fp = BytesIO()
-        sf.write(mp3_fp, augmented_signal, sr)
+        wav_buf = BytesIO()
+        sf.write(wav_buf, augmented_signal, sr)
 
-        b64audio = base64.b64encode(mp3_fp.getvalue())
+        b64audio = base64.b64encode(wav_buf.getvalue())
         captcha_audio = str(b64audio)[2:][:-1]
 
         return {'img': self.gen_b64img(), 'audio': captcha_audio, 'text': self.text, 'hash': c_hash}
