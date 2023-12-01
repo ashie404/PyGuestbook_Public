@@ -48,7 +48,7 @@ class CAPTCHA:
         c_hash = c_hash.replace(self.config['METHOD'] + '$', '')
 
         # generate captcha audio
-        audio_txt = " ".join(self.text)
+        audio_txt = "   ".join(self.text)
 
         tts = Voice(lang='us', speed=80, pitch=50, voice_id=1)
         wav = tts.to_audio(audio_txt)
