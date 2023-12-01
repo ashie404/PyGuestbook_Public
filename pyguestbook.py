@@ -14,10 +14,10 @@ from werkzeug.exceptions import HTTPException
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
-from ashiecaptcha import CAPTCHA
+from sushicaptcha import CAPTCHA
 import configparser
 config = configparser.ConfigParser()
-config.read('ashiecaptcha.ini')
+config.read('sushicaptcha.ini')
 CAPTCHA_CONFIG = {'SECRET_CAPTCHA_KEY':config['CAPTCHA_CONFIG']['SECRET_CAPTCHA_KEY'], 
     'METHOD': config['CAPTCHA_CONFIG']['METHOD'],
     'CAPTCHA_LENGTH': int(config['CAPTCHA_CONFIG']['CAPTCHA_LENGTH']),
@@ -196,17 +196,6 @@ def postHitA():
         okResp.headers['Access-Control-Allow-Origin'] = '*'
         return okResp
 
-# get hits from database (ashiecorner)
-@app.route('/hc/gh/ashiecorner', methods=['GET'])
-@limiter.limit('1/second', methods=['GET'], error_message='You are fetching hits too quickly.')
-def getHitsA():
-    with open('hitcounter.txt', mode='r', newline='') as f:
-        data = f.readline().split(',')
-        response = jsonify({'hits': data[1].strip()})
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Access-Control-Allow-Methods'] = 'GET'
-        return response
-
 # register hit in database (zencorner)
 @app.route('/hc/h/zencorner', methods=['POST'])
 @limiter.limit('1/day', methods=['POST'], error_message='Cannot count more than 1 hit per day.')
@@ -223,13 +212,18 @@ def postHitZ():
         okResp.headers['Access-Control-Allow-Origin'] = '*'
         return okResp
 
-# get hits from database (zencorner)
-@app.route('/hc/gh/zencorner', methods=['GET'])
+# get hits from database
+@app.route('/hc/gh/<string:db>', methods=['GET'])
 @limiter.limit('1/second', methods=['GET'], error_message='You are fetching hits too quickly.')
-def getHitsZ():
+def getHits(db):
+    d = 0
+    if db == "ashiecorner":
+        d = 1
+    elif db != "zencorner":
+        return abort(400, 'Invalid database query.')
     with open('hitcounter.txt', mode='r', newline='') as f:
         data = f.readline().split(',')
-        response = jsonify({'hits': data[0].strip()})
+        response = jsonify({'hits': data[d].strip()})
         response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Access-Control-Allow-Methods'] = 'GET'
         return response

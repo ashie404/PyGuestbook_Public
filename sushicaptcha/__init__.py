@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from ashiecaptcha.config import config
+from sushicaptcha.config import config
 from io import BytesIO
 from werkzeug.security import generate_password_hash, check_password_hash
 import base64
@@ -9,10 +9,7 @@ import os
 import time
 
 from captcha.image import ImageCaptcha
-from gtts import gTTS
-import librosa
-import audiomentations
-import soundfile as sf
+from voxpopuli import Voice
 
 class CAPTCHA:
     def __init__(self, default_config=config, config=config):
@@ -51,24 +48,11 @@ class CAPTCHA:
         c_hash = c_hash.replace(self.config['METHOD'] + '$', '')
 
         # generate captcha audio
-        self.soundindex+=1
         audio_txt = " ".join(self.text)
-        #i caved in and just used gtts cry
-        tts = gTTS(audio_txt)
-        tts.save(str(self.soundindex) + '.mp3')
-        # augment audio
-        augment = audiomentations.Compose([
-            audiomentations.AddGaussianNoise(min_amplitude=0.01, max_amplitude=0.05, p=0.8),
-            audiomentations.LowPassFilter(150, 3500, 12, 24, False, 0.5),
-            audiomentations.TanhDistortion(0.01, 0.3, 0.8)
-        ])
-        signal, sr = librosa.load(str(self.soundindex) + '.mp3')
-        augmented_signal = augment(signal, sr)
-        wav_buf = BytesIO()
-        sf.write(wav_buf, augmented_signal, sr)
-        os.remove(str(self.soundindex) + '.mp3')
 
-        b64audio = base64.b64encode(wav_buf.getvalue())
+        tts = Voice(lang='en')
+        wav = tts.to_audio(audio_txt)
+        b64audio = base64.b64encode(wav)
         captcha_audio = str(b64audio)[2:][:-1]
 
         return {'img': self.gen_b64img(), 'audio': captcha_audio, 'text': self.text, 'hash': c_hash}
