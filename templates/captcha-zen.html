@@ -2,6 +2,11 @@
 <html>
     <head>
         <style>
+            @font-face {
+            font-family: 'Comicoro'; /* 16px */
+            src: url("https://ashiecorner.xyz/fnt/comicoro.woff2") format("woff2"),
+            url("https://ashiecorner.xyz/fnt/comicoro.ttf") format("truetype");
+            }
             body{font-family:Comicoro;font-size:16px;background-color:#261142;background:linear-gradient(to bottom,#3d2594,#261142);overflow:hidden;color:#FFF;}
             .simple-captcha-text {
                 appearance: none;
@@ -11,6 +16,7 @@
                 font-size: 14px;
                 border: 2px #860086 inset;
                 transition: border .3s,box-shadow .3s;
+                width: 155px;
             }
             .simple-captcha-text:focus {
                 outline:0;
